@@ -71,6 +71,7 @@ public class MyResource {
 	}
 
 	private String[] getSecuritiesByCategory(String name) {
+		if (name == null) return null;
 		if (name.equals("Finance")) {
 			return new String[] {
 				"JPM US Equity",

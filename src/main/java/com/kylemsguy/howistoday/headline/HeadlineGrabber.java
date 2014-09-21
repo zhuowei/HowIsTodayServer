@@ -19,7 +19,8 @@ public class HeadlineGrabber {
 		for (int i = 0; i < titles.getLength(); i++) {
 			Node n = titles.item(i);
 			String textContent = n.getTextContent();
-			if (textContent.equals("World News") || textContent.equals("Science")) continue;
+			if (textContent.equals("World News") || textContent.equals("Science") ||
+				textContent.equals("Financial news and views")) continue;
 			retval.add(textContent);
 		}
 		return retval;
@@ -58,7 +59,7 @@ public class HeadlineGrabber {
 			public void run() {
 				while(true) {
 					try {
-						updateOnce("worldnews");
+						updateOnce("finance");
 						updateOnce("science");
 						Thread.sleep(30 * 60 * 1000); // 30 min
 					} catch (Exception e) {

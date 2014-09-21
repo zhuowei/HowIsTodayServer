@@ -64,7 +64,7 @@ public class MyResource {
 				}
 			}
 			double avg = sum / stockNames.length;
-			String headline = HeadlineGrabber.getSuitableHeadline(avg, "SciTech".equals(subject)? "science": "worldnews");
+			String headline = HeadlineGrabber.getSuitableHeadline(avg, "SciTech".equals(subject)? "science": "finance");
 			if (headline.length() > 100) {
 				headline = headline.substring(0, 100) + "...";
 			}

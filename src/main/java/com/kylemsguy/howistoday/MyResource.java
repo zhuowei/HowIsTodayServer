@@ -26,7 +26,7 @@ public class MyResource {
 				if (Main.isDebug()) {
 					stockNames = new String[] {subject};
 				} else {
-					return "{0: 0, 1: \"No query param\"}";
+					return "{\"0\": 0, \"1\": \"No query param\"}";
 				}
 			}
 			Session session = BloombergApiManager.getSession();
@@ -63,7 +63,7 @@ public class MyResource {
 			}
 			double avg = sum / stockNames.length;
 			String headline = "Have a nice day";
-			return "{0:" + avg + ", 1:\"" + headline + "\"}";
+			return "{\"0\":" + avg + ", \"1\":\"" + headline + "\"}";
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

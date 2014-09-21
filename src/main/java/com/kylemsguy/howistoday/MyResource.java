@@ -4,6 +4,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import com.bloomberglp.blpapi.*;
+import com.kylemsguy.howistoday.headline.*;
+
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -26,7 +28,7 @@ public class MyResource {
 				if (Main.isDebug()) {
 					stockNames = new String[] {subject};
 				} else {
-					return "{\"0\": 0, \"1\": \"No query param\"}";
+					return "{\"0\": 0, \"1\": \"Canucks win Stanley Cup; riots start anyways\"}";
 				}
 			}
 			Session session = BloombergApiManager.getSession();
@@ -62,7 +64,10 @@ public class MyResource {
 				}
 			}
 			double avg = sum / stockNames.length;
-			String headline = "Have a nice day";
+			String headline = HeadlineGrabber.getSuitableHeadline(avg);
+			if (headline.length() > 100) {
+				headline = headline.substring(0, 100) + "...";
+			}
 			return "{\"0\":" + avg + ", \"1\":\"" + headline + "\"}";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,7 +84,7 @@ public class MyResource {
 				"C US Equity",
 				"WFC US Equity"
 			};
-		} else if (name.equals("Science and Technology")) {
+		} else if (name.equals("SciTech")) {
 			return new String[] {
 				"AAPL US Equity",
 				"GOOG US Equity",

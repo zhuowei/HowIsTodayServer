@@ -48,6 +48,17 @@
             <artifactId>blpapi</artifactId>
             <version>3.7.1</version>
         </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.4.1</version>
+            <classifier>models</classifier>
+        </dependency>
     </dependencies>
 
     <build>
@@ -75,6 +86,7 @@
                 </executions>
                 <configuration>
                     <mainClass>com.kylemsguy.howistoday.Main</mainClass>
+                    <!--<mainClass>com.kylemsguy.howistoday.headline.HeadlineGrabber</mainClass>-->
                 </configuration>
             </plugin>
         </plugins>

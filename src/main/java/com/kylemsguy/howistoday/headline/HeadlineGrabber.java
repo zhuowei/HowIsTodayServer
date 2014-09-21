@@ -9,36 +9,43 @@ import org.w3c.dom.*;
 
 public class HeadlineGrabber {
 
-	public static List<Headline> headlines = new ArrayList<Headline>();
+	public static Map<String, List<Headline>> allReddits = new HashMap<String, List<Headline>>();
 
-	public static List<String> getLatestRedditHeadlines() throws Exception {
+	public static List<String> getLatestRedditHeadlines(String subreddit) throws Exception {
 		List<String> retval = new ArrayList<String>();
 		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().
-			parse("http://www.reddit.com/r/worldnews.xml");
+			parse("http://www.reddit.com/r/"+ subreddit + ".xml");
 		NodeList titles = document.getElementsByTagName("title");
 		for (int i = 0; i < titles.getLength(); i++) {
 			Node n = titles.item(i);
 			String textContent = n.getTextContent();
-			if (textContent.equals("World News")) continue;
+			if (textContent.equals("World News") || textContent.equals("Science")) continue;
 			retval.add(textContent);
 		}
 		return retval;
 	}
 
-	public static void updateOnce() {
+	public static void updateOnce(String subreddit) {
+		List<Headline> headlines = allReddits.get(subreddit);
+		if (headlines == null) {
+			headlines = new ArrayList<Headline>();
+			allReddits.put(subreddit, headlines);
+		}
 		try {
 			headlines.clear();
-			List<String> headlinesStr = getLatestRedditHeadlines();
+			List<String> headlinesStr = getLatestRedditHeadlines(subreddit);
 			for (String s: headlinesStr) {
 				headlines.add(new Headline(s, FlappyClassifier.checkSentiment(s)));
 			}
 			Collections.sort(headlines);
+			System.out.println(headlines);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static String getSuitableHeadline(double val) {
+	public static String getSuitableHeadline(double val, String subreddit) {
+		List<Headline> headlines = allReddits.get(subreddit);
 		if (headlines.size() == 0) return "Toronto Leafs win Grey Cup";
 		if (val >= 0) {
 			return headlines.get(0).text;
@@ -51,7 +58,8 @@ public class HeadlineGrabber {
 			public void run() {
 				while(true) {
 					try {
-						updateOnce();
+						updateOnce("worldnews");
+						updateOnce("science");
 						Thread.sleep(30 * 60 * 1000); // 30 min
 					} catch (Exception e) {
 						e.printStackTrace();

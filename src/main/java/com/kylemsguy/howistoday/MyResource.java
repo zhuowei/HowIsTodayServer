@@ -8,7 +8,7 @@ import com.bloomberglp.blpapi.*;
 /**
  * Root resource (exposed at "myresource" path)
  */
-@Path("myresource")
+@Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public class MyResource {
 
@@ -23,8 +23,11 @@ public class MyResource {
 		try {
 			String[] stockNames = getSecuritiesByCategory(subject);
 			if (stockNames == null) {
-				// DISABLE THIS IN PROD!!!1111
-				stockNames = new String[] {subject};
+				if (Main.isDebug()) {
+					stockNames = new String[] {subject};
+				} else {
+					return "{0: 0, 1: \"No query param\"}";
+				}
 			}
 			Session session = BloombergApiManager.getSession();
 			double sum = 0;
@@ -42,11 +45,15 @@ public class MyResource {
 					while (msgIter.hasNext()) {
 						Message msg = msgIter.next();
 						if (msg.correlationID() == d_cid) {
-							System.out.println(msg);
-							//Element allVals = msg.getElementByName("securityData[]");
-							//for (int i = 0; i < allVals.numValues(); i++) {
-							//	//double val = allVals.get
-							//}	
+							if (Main.isDebug()) System.out.println(msg);
+							Element allVals = msg.getElement("securityData");
+							for (int i = 0; i < allVals.numValues(); i++) {
+								double val = allVals.getValueAsElement(i).
+									getElement("fieldData").
+									getElementAsFloat64("News Sentiment");
+								if (Main.isDebug()) System.out.println("Yo, it's " + val);
+								sum += val;
+							}
 						}
 					}
 					if (event.eventType() == Event.EventType.RESPONSE) {
@@ -54,7 +61,7 @@ public class MyResource {
 					}
 				}
 			}
-			double avg = 0;
+			double avg = sum / stockNames.length;
 			String headline = "Have a nice day";
 			return "{0:" + avg + ", 1:\"" + headline + "\"}";
 		} catch (Exception e) {
